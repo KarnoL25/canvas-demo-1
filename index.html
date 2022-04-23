@@ -8,24 +8,39 @@
     <title>画板</title>
 </head>
 <body>
-    <div id="canvas"></div>
+    <canvas id="canvas"></canvas>
     <script>
-        canvas.onclick =(e)=>{
-            console.log(e.clientX)
-            console.log(e.clientY)
-            // console.log调试法
-            let div = document.createElement('div')
-            div.style.position = 'absolute'
-            div.style.left = e.clientX+'px'
-            div.style.top = e.clientY+'px'
-            div.style.border = '1px solid black'
-            div.style.width = '6px'
-            div.style.height = '6px'
-            div.style.marginLeft = '-3px'
-            div.style.marginTop = '-3px'
-            div.style.borderRadius = '50%'
-            div.style.background = 'black'
-            canvas.appendChild(div)
+        let canvas = document.getElementById('canvas')
+        canvas.width = document.documentElement.clientWidth
+        canvas.height = document.documentElement.clientHeight
+    //   画线
+        let ctx = canvas.getContext('2d')
+
+        let painting = false
+
+
+        ctx.fillStyle = 'black'
+        ctx.strokeStyle = 'none'
+        canvas.onmousedown = ()=>{
+            painting = true
+        }
+        canvas.onmousemove=(e)=>{
+            if(painting === true){
+                // ctx.fillRect(e.clientX-5,e.clientY-5,10,10)
+                // 画矩形
+
+
+                ctx.beginPath()
+                ctx.arc(e.clientX,e.clientY,1,0,2*Math.PI)
+                // obj.arc(圆心X坐标，圆心Y坐标，半径，起始角度‘三点钟位置是0’，结束角度，counterclockwise顺时针逆时针画图‘可选，默认顺时针false，逆时针true’)
+                ctx.stroke()
+                ctx.fill()
+            }else{
+                console.log('do nothing')  
+            } 
+        }
+        canvas.onmouseup = ()=>{
+            painting = false
         }
     </script>
 </body>
