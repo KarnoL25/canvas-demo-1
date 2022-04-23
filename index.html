@@ -15,33 +15,61 @@
         canvas.height = document.documentElement.clientHeight
     //   画线
         let ctx = canvas.getContext('2d')
-
-        let painting = false
-
-
         ctx.fillStyle = 'black'
         ctx.strokeStyle = 'none'
-        canvas.onmousedown = ()=>{
+        ctx.lineWidth = 3
+        ctx.lineCap = 'round'
+
+        let painting = false
+        let last
+
+        var isTouchDevice = 'ontouchstart' in document.documentElement
+       
+        if(isTouchDevice){  //手机
+            canvas.ontouchstart = (e) =>{
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                last = [x,y]
+            }
+            canvas.ontouchmove = (e)=>{
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                drawLine(last[0],last[1],x,y)
+                last = [x,y]
+            }
+        }else{ //PC端
+            canvas.onmousedown = (e)=>{
             painting = true
+            last = [e.clientX,e.clientY]
         }
-        canvas.onmousemove=(e)=>{
-            if(painting === true){
-                // ctx.fillRect(e.clientX-5,e.clientY-5,10,10)
-                // 画矩形
+            canvas.onmousemove=(e)=>{
+                if(painting === true){
+                    drawLine(last[0],last[1],e.clientX,e.clientY)
+                    last = [e.clientX,e.clientY]
+                    // ctx.fillRect(e.clientX-5,e.clientY-5,10,10)
+                    // ↑画矩形
+                    // ↓画圆形
+                    // ctx.beginPath()
+                    // ctx.arc(e.clientX,e.clientY,1,0,2*Math.PI)
+                    // obj.arc(圆心X坐标，圆心Y坐标，半径，起始角度‘三点钟位置是0’，结束角度，counterclockwise顺时针逆时针画图‘可选，默认顺时针false，逆时针true’)
+                    // ctx.stroke()
+                    // ctx.fill()
+                }else{
+                    console.log('do nothing')  
+                } 
+            }
+            canvas.onmouseup = ()=>{
+                painting = false
+            }
+        }
 
-
-                ctx.beginPath()
-                ctx.arc(e.clientX,e.clientY,1,0,2*Math.PI)
-                // obj.arc(圆心X坐标，圆心Y坐标，半径，起始角度‘三点钟位置是0’，结束角度，counterclockwise顺时针逆时针画图‘可选，默认顺时针false，逆时针true’)
-                ctx.stroke()
-                ctx.fill()
-            }else{
-                console.log('do nothing')  
-            } 
-        }
-        canvas.onmouseup = ()=>{
-            painting = false
-        }
+       function drawLine(x1,y1,x2,y2){
+           ctx.beginPath()
+           ctx.moveTo(x1,y1)
+           ctx.lineTo(x2,y2)
+           ctx.stroke()
+       }
+       
     </script>
 </body>
 </html>
